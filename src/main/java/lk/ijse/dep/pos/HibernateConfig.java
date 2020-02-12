@@ -1,6 +1,5 @@
 package lk.ijse.dep.pos;
 
-import lk.ijse.dep.crypto.DEPCrypt;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +17,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
-@PropertySource("file:${user.dir}/resources/application.properties")
+@PropertySource("classpath:application.properties")
 public class HibernateConfig {
 
     @Autowired
@@ -34,26 +33,26 @@ public class HibernateConfig {
     }
 
     @Bean
-    public DataSource dataSource(){
+    public DataSource dataSource() {
         DriverManagerDataSource ds = new DriverManagerDataSource();
         ds.setDriverClassName(env.getRequiredProperty("hibernate.connection.driver_class"));
         ds.setUrl(env.getRequiredProperty("hibernate.connection.url"));
-        ds.setUsername(DEPCrypt.decode(env.getRequiredProperty("hibernate.connection.username"),"dep4"));
-        ds.setPassword(DEPCrypt.decode(env.getRequiredProperty("hibernate.connection.password"),"dep4"));
+        ds.setUsername(env.getRequiredProperty("hibernate.connection.username"));
+        ds.setPassword(env.getRequiredProperty("hibernate.connection.password"));
         return ds;
     }
 
-    private Properties hibernateProperties(){
+    private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect",env.getRequiredProperty("hibernate.dialect"));
-        properties.put("hibernate.show_sql",env.getRequiredProperty("hibernate.show_sql"));
-        properties.put("hibernate.hbm2ddl.auto",env.getRequiredProperty("hibernate.hbm2ddl.auto"));
-        properties.put("hibernate.allow_refresh_detached_entity",env.getRequiredProperty("hibernate.allow_refresh_detached_entity"));
+        properties.put("hibernate.dialect", env.getRequiredProperty("hibernate.dialect"));
+        properties.put("hibernate.show_sql", env.getRequiredProperty("hibernate.show_sql"));
+        properties.put("hibernate.hbm2ddl.auto", env.getRequiredProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.allow_refresh_detached_entity", env.getRequiredProperty("hibernate.allow_refresh_detached_entity"));
         return properties;
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager(SessionFactory sessionFactory){
+    public PlatformTransactionManager transactionManager(SessionFactory sessionFactory) {
         return new HibernateTransactionManager(sessionFactory);
     }
 }
